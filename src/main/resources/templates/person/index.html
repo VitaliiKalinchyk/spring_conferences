@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>People</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/menu :: menu}"></div>
+
+<form th:method="get" th:action="@{/person}">
+	<label for="search-by">	</label>
+	<input name="searchBy" id="search-by"/>
+	<input type="submit" value="Search Person">
+</form>
+
+<table aria-label="People">
+	<thead>
+	<tr>
+		<th><a th:href="@{'/person/1?searchBy=' + ${searchBy} + '&sortField=id&sortOrder=' + ${sortField == 'id' ?
+		reverseSortOrder : sortOrder}}">
+			Id
+		</a></th>
+		<th><a th:href="@{'/person/1?searchBy=' + ${searchBy} + '&sortField=email&sortOrder=' + ${sortField == 'email' ?
+		reverseSortOrder : sortOrder}}">
+			Email
+		</a></th>
+		<th><a th:href="@{'/person/1?searchBy=' + ${searchBy} + '&sortField=name&sortOrder=' + ${sortField == 'name' ?
+		reverseSortOrder : sortOrder}}">
+			Name
+		</a></th>
+		<th><a th:href="@{'/person/1?searchBy=' + ${searchBy} + '&sortField=surname&sortOrder=' + ${sortField == 'surname' ?
+		reverseSortOrder : sortOrder}}">
+			Surname
+		</a></th>
+		<th>Role</th>
+		<th>Is blocked</th>
+		<th>View</th>
+		<th>Block/Unblock</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr th:each="person : ${persons}">
+		<td th:text="${person.id}"/>
+		<td th:text="${person.email}"/>
+		<td th:text="${person.name}"/>
+		<td th:text="${person.surname}"/>
+		<td th:text="${person.role}"/>
+		<td th:text="${person.blocked}"/>
+		<td>
+			<a th:href="@{/person/show/{id}(id=${person.id})}">To person</a>
+		</td>
+		<td>
+			<form th:method="patch" th:action="@{/person/block/{id}(id=${person.id})}">
+				<input type="hidden" name="url"
+				       th:value="${'/person/' + currentPage + '?searchBy=' + searchBy + '&sortField=' + sortField + '&sortOrder=' + sortOrder}">
+				<input type="hidden" th:value="${person.blocked}" name="blocked">
+				<input type="hidden" th:value="${person.email}" name="email">
+				<input type="submit" th:value="${person.blocked ? 'Unblock' : 'Block'}">
+			</form>
+		</td>
+	</tr>
+	</tbody>
+</table>
+
+<div th:if="${totalPages > 1}">
+	Total Rows: [[${totalItems}]]
+	<br>
+	<span th:each="i: ${#numbers.sequence(fromPage, toPage)}">
+      <a th:if="${currentPage != i}"
+         th:href="@{'/person/' + ${i} + '?searchBy=' + ${searchBy} + '&sortField=' + ${sortField} + '&sortOrder=' + ${sortOrder}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>
+     </span>
+</div>
+<a th:if="${currentPage < totalPages}"
+   th:href="@{'/person/' + ${currentPage + 1} + '?searchBy=' + ${searchBy} + '&sortField=' + ${sortField} + '&sortOrder=' + ${sortOrder}}">Next</a>
+
+<a th:if="${currentPage > 1}"
+   th:href="@{'/person/' + ${currentPage - 1}+ '?searchBy=' + ${searchBy} + '&sortField=' + ${sortField} + '&sortOrder=' + ${sortOrder}}">
+	Previous
+</a>
+<br>
+<a th:if="${currentPage != 1}"
+   th:href="@{'/person/1?searchBy=' + ${searchBy} + '&sortField=' + ${sortField} + '&sortOrder=' + ${sortOrder}}">First</a>
+<a th:if="${currentPage < totalPages}"
+   th:href="@{'/person/' + ${totalPages}+ '?searchBy=' + ${searchBy} + '&sortField=' + ${sortField} + '&sortOrder=' + ${sortOrder}}">Last</a>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

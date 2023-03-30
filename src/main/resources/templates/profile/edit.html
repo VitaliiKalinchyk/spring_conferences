@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Edit Profile</title>
+	<style>
+        p {color:red}
+	</style>
+</head>
+
+<body>
+
+<div th:replace="~{fragments/menu :: menu}"></div>
+
+<form th:method="patch" th:action="@{/profile/edit}" th:object="${person}">
+	<input type="hidden" th:field="*{id}">
+	<label for="email">Enter email: </label><input id="email" th:field="*{email}"><br>
+	<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" ></p><br>
+	<label for="name">Enter name: </label><input id="name" th:field="*{name}"><br>
+	<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" ></p><br>
+	<label for="surname">Enter surname: </label><input id="surname" th:field="*{surname}"><br>
+	<p th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" ></p><br>
+	<input type="submit" value="Edit">
+</form>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
